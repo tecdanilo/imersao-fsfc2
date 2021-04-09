@@ -1,0 +1,26 @@
+version: "3"
+services:
+  backend:
+    build: nest-api
+    ports:
+      - "3000:3000"
+    environment: 
+      - MONGO_DSN=mongodb://root:root@db/nest?authSource=admin
+     
+  front:
+    build: front-react
+    ports:
+      - "3001:3000"
+    depends_on: 
+      - backend
+  
+  db:
+    image: mongo:4.4.4
+    restart: always
+    volumes:
+      - ./.docker/dbdata:/data/db
+      # - ./.docker/mongo:/docker-entrypoint-initdb.d
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_DATABASE=nest

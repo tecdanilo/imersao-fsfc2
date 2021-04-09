@@ -1,32 +1,18 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Inject,
-  OnModuleInit,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, OnModuleInit } from '@nestjs/common';
 import { RoutesService } from './routes.service';
 import { CreateRouteDto } from './dto/create-route.dto';
 import { UpdateRouteDto } from './dto/update-route.dto';
-import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
-import { Producer } from '@nestjs/microservices/external/kafka.interface';
-import { RoutesGateway } from './routes.gateway';
+import { Producer } from 'kafkajs';
 
 @Controller('routes')
-export class RoutesController implements OnModuleInit {
-  private kafkaProducer: Producer;
+export class RoutesController {
+
+private kafkaProducer: Producer;
 
   constructor(
-    private readonly routesService: RoutesService,
-    @Inject('KAFKA_SERVICE')
-    private kafkaClient: ClientKafka,
-    private routeGateway: RoutesGateway,
-  ) {}
-
+    private readonly routesService: RoutesService
+    ) {}
+  
   @Post()
   create(@Body() createRouteDto: CreateRouteDto) {
     return this.routesService.create(createRouteDto);
@@ -52,35 +38,10 @@ export class RoutesController implements OnModuleInit {
     return this.routesService.remove(+id);
   }
 
-  async onModuleInit() {
-    this.kafkaProducer = await this.kafkaClient.connect();
-  }
 
   @Get(':id/start')
-  startRoute(@Param('id') id: string) {
-    this.kafkaProducer.send({
-      topic: 'route.new-direction',
-      messages: [
-        {
-          key: 'route.new-direction',
-          value: JSON.stringify({ routeId: id, clientId: '' }),
-        },
-      ],
-    });
+  startRoute(@Param('id') id: string){
+    console.log(`start route ${id}`);
   }
 
-  @MessagePattern('route.new-position')
-  consumeNewPosition(
-    @Payload()
-    message: {
-      value: {
-        routeId: string;
-        clientId: string;
-        position: [number, number];
-        finished: boolean;
-      };
-    },
-  ) {
-    this.routeGateway.sendPosition(message.value);
-  }
 }

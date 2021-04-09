@@ -1,0 +1,14 @@
+.background-site {
+    background-image: url('background.jpg');
+    background-color: black; /* background-clip: content-box; */
+    background-size: auto;
+
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+h1 {
+    text-align: center;
+    color: goldenrod;
+}
