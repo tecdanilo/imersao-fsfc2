@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-react
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: front-react
+  template:
+    metadata:
+      name: front-react
+      labels:
+        app.kubernetes.io/name: front-react
+    spec:
+      containers:
+        - name: front-react
+          image: tecdanilo/front-react:latest
+          ports:
+            - containerPort: 3000

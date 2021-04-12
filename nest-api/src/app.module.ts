@@ -9,7 +9,7 @@ import { RoutesModule } from './routes/routes.module';
   imports: [
     ConfigModule.forRoot(),
     RoutesModule, 
-    MongooseModule.forRoot(process.env.MONGO_DSN, {useNewUrlParser: true})
+    // MongooseModule.forRoot(process.env.MONGO_DSN, {useNewUrlParser: true})
   ],
   controllers: [AppController],
   providers: [AppService],
